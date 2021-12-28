@@ -39,7 +39,7 @@ void setNode(Chunk *temp, int start_addr, int return_size);
 void memMerge();
 void memMergeData(Chunk *current, Chunk *temp); // 해당 함수는 오류로 인한 사용 불가
 
-void bwfitSort_test();
+void bwfitSort();
 void bwfitSwap(Chunk *temp_1, Chunk *temp_2);
 
 void bfitSort();

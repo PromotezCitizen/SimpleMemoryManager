@@ -1,5 +1,12 @@
 #include "memManage.h"
 
+#define SORT_CONDITION(mem1,mem2,tag) (((tag) == B_FIT) ? \
+							((mem1)->mem_left_size > (mem2)->mem_left_size) : \
+							((mem2)->mem_left_size) > (mem1)->mem_left_size)
+// 위의 전처리기는 다음 조건을 만족함
+// best fit일 경우 - temp_1->mem_left_size > temp_2->mem_left_size 
+// worst fit일 경우 - temp_1->mem_left_size < temp_2->mem_left_size 
+
 void setTag() {
 	do {
 		cout << "0 : first fit" << endl << "1 : best fit" << endl << "2 : worst fit" << endl << "입력 >> ";
@@ -17,7 +24,7 @@ void setTag() {
 void initMem() {
 	available = new Chunk;
 	available->link = NULL;
-	available->mem_left_size = MAX_MEM;
+	available->mem_left_size = MAX_MEM; // 추후에 사용자가 최대 메모리 크기 설정
 	available->mem_start = 0;
 }
 
@@ -77,30 +84,23 @@ void myfree(int start_addr, int return_size) {
 	temp->link = new Chunk;
 	temp = temp->link;
 	setNode(temp, start_addr, return_size);
-	temp->link = NULL;
-	temp->mem_start = start_addr;
-	temp->mem_left_size = return_size;
 
 	switch (tag) {
 	case F_FIT:
 		memMerge();
 		break;
-	case B_FIT:
-		bfitSort(); // 메모리 정렬이 없으면 오류
-		memMerge();
-		bfitSort();
-		break;
+	case B_FIT: // 정렬 없으면 오류 발생
 	case W_FIT:
-		wfitSort();
+		bwfitSort();
 		memMerge();
-		wfitSort();
+		bwfitSort();
 		break;
 	}
 
 	printf("mem free\n");
 }
 
-void setNode(Chunk *temp, int start_addr, int return_size) {
+void setNode(Chunk *temp, int start_addr, int return_size) { // 노드 설정
 	temp->link = NULL;
 	temp->mem_start = start_addr;
 	temp->mem_left_size = return_size;
@@ -162,12 +162,12 @@ void memMergeData(Chunk *current, Chunk *temp) {
 }
 //
 
-void bwfitSort_test() {
+void bwfitSort() {
 	Chunk *temp_1 = available, *temp_2 = NULL;
 
 	for (; temp_1->link != NULL; temp_1 = temp_1->link) {
 		for (temp_2 = temp_1->link; temp_2 != NULL; temp_2 = temp_2->link) {
-			if (temp_1->mem_left_size > temp_2->mem_left_size) bwfitSwap(temp_1, temp_2); // < 와 > 를 한번에 할 수 있는 방법은?
+			if (SORT_CONDITION(temp_1, temp_2, tag)) bwfitSwap(temp_1, temp_2);
 		}
 	}
 }
