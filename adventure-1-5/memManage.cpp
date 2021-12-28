@@ -81,7 +81,7 @@ void myfree(int start_addr, int return_size) {
 	temp->mem_start = start_addr;
 	temp->mem_left_size = return_size;
 
-	switch (F_FIT) {
+	switch (tag) {
 	case F_FIT:
 		memMerge();
 		break;
