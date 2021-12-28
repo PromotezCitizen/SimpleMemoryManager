@@ -3,9 +3,9 @@
 #define SORT_CONDITION(mem1,mem2,tag) (((tag) == B_FIT) ? \
 							((mem1)->mem_left_size > (mem2)->mem_left_size) : \
 							((mem2)->mem_left_size) > (mem1)->mem_left_size)
-// 위의 전처리기는 다음 조건을 만족함
-// best fit일 경우 - temp_1->mem_left_size > temp_2->mem_left_size
-// worst fit일 경우 - temp_1->mem_left_size < temp_2->mem_left_size
+// 위의 전처리기는 다음 조건을 반환
+// best fit일 경우 - (temp_1->mem_left_size > temp_2->mem_left_size)
+// worst fit일 경우 - (temp_1->mem_left_size < temp_2->mem_left_size)
 
 void setTag() {
 	do {
