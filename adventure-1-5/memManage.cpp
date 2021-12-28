@@ -4,8 +4,8 @@
 							((mem1)->mem_left_size > (mem2)->mem_left_size) : \
 							((mem2)->mem_left_size) > (mem1)->mem_left_size)
 // 위의 전처리기는 다음 조건을 만족함
-// best fit일 경우 - temp_1->mem_left_size > temp_2->mem_left_size 
-// worst fit일 경우 - temp_1->mem_left_size < temp_2->mem_left_size 
+// best fit일 경우 - temp_1->mem_left_size > temp_2->mem_left_size
+// worst fit일 경우 - temp_1->mem_left_size < temp_2->mem_left_size
 
 void setTag() {
 	do {
@@ -147,21 +147,6 @@ void memMerge() {	// best, worst fit 메모리 병합
 
 }
 
-// 해당 함수는 오류로 인한 사용 불가
-void memMergeData(Chunk *current, Chunk *temp) { 
-	Chunk *mid_node;
-
-	current->mem_left_size = current->mem_left_size + temp->mem_left_size;
-	mid_node = current;
-	while (mid_node->link != temp) {
-		mid_node = mid_node->link;
-	}
-	mid_node->link = temp->link;
-	delete temp;
-	temp = current->link;
-}
-//
-
 void bwfitSort() {
 	Chunk *temp_1 = available, *temp_2 = NULL;
 
@@ -182,32 +167,6 @@ void bwfitSwap(Chunk *temp_1, Chunk *temp_2) { // 데이터 swap
 	mem_left_size = temp_1->mem_left_size;
 	temp_1->mem_left_size = temp_2->mem_left_size;
 	temp_2->mem_left_size = mem_left_size;
-}
-
-void bfitSort() {
-	Chunk *temp_1 = available;
-	Chunk *temp_2 = NULL;
-
-	for (; temp_1->link != NULL; temp_1 = temp_1->link) {
-		for (temp_2 = temp_1->link; temp_2 != NULL; temp_2 = temp_2->link) {
-			if (temp_1->mem_left_size > temp_2->mem_left_size) {
-				bwfitSwap(temp_1, temp_2);
-			}
-		}
-	}
-}
-
-void wfitSort() {
-	Chunk *temp_1 = available;
-	Chunk *temp_2 = NULL;
-
-	for (; temp_1->link != NULL; temp_1 = temp_1->link) {
-		for (temp_2 = temp_1->link; temp_2 != NULL; temp_2 = temp_2->link) {
-			if (temp_1->mem_left_size < temp_2->mem_left_size) {
-				bwfitSwap(temp_1, temp_2);
-			}
-		}
-	}
 }
 
 void bwfitMerge() {
