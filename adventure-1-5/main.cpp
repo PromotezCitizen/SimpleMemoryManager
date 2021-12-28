@@ -1,7 +1,7 @@
 #include "memManage.h"
 
 Chunk *available;
-unsigned char tag = 255;
+unsigned int tag = 255;
 
 int main(int argc, char *argv[]) {
 	setTag();

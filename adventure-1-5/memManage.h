@@ -25,7 +25,7 @@ typedef struct chunk {
 #endif
 
 extern Chunk *available;
-extern unsigned char tag;
+extern unsigned int tag;
 
 void setTag();
 

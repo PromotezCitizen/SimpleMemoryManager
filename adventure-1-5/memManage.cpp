@@ -8,9 +8,6 @@ void setTag() {
 			system("cls");
 			cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
 		}
-
-		cout << tag << endl;
-		cout << !((tag == 0) || (tag == 1) || (tag == 2)) << " " << ((tag != 0) && (tag != 1) && (tag != 2)) << endl;
 	} while ((tag != 0) && (tag != 1) && (tag != 2));
 
 	system("PAUSE");
