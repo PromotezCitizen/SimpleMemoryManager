@@ -1,8 +1,11 @@
 #include "memManage.h"
 
 Chunk *available;
+unsigned char tag = 255;
 
 int main(int argc, char *argv[]) {
+	setTag();
+
 	initMem();
 
 	int a = myalloc(10);

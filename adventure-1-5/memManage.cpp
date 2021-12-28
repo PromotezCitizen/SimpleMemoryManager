@@ -1,5 +1,22 @@
 #include "memManage.h"
 
+void setTag() {
+	do {
+		cout << "0 : first fit" << endl << "1 : best fit" << endl << "2 : worst fit" << endl << "입력 >> ";
+		cin >> tag;
+		if (!((tag == 0) || (tag == 1) || (tag == 2))) {
+			system("cls");
+			cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+		}
+
+		cout << tag << endl;
+		cout << !((tag == 0) || (tag == 1) || (tag == 2)) << " " << ((tag != 0) && (tag != 1) && (tag != 2)) << endl;
+	} while ((tag != 0) && (tag != 1) && (tag != 2));
+
+	system("PAUSE");
+	system("cls");
+}
+
 void initMem() {
 	available = new Chunk;
 	available->link = NULL;
@@ -52,6 +69,44 @@ int myalloc(int req_size) {
 	// error : 메모리 할당 실패
 	printf("mem allocated falied\t%3d\n", -1);
 	return -1;
+}
+
+// F_FIT B_FIT W_FIT
+
+void myfree(int start_addr, int return_size) {
+	Chunk *temp = available;
+
+	while (temp->link != NULL) temp = temp->link;
+	temp->link = new Chunk;
+	temp = temp->link;
+	setNode(temp, start_addr, return_size);
+	temp->link = NULL;
+	temp->mem_start = start_addr;
+	temp->mem_left_size = return_size;
+
+	switch (F_FIT) {
+	case F_FIT:
+		memMerge();
+		break;
+	case B_FIT:
+		bfitSort(); // 메모리 정렬이 없으면 오류
+		memMerge();
+		bfitSort();
+		break;
+	case W_FIT:
+		wfitSort();
+		memMerge();
+		wfitSort();
+		break;
+	}
+
+	printf("mem free\n");
+}
+
+void setNode(Chunk *temp, int start_addr, int return_size) {
+	temp->link = NULL;
+	temp->mem_start = start_addr;
+	temp->mem_left_size = return_size;
 }
 
 void memMerge() {	// best, worst fit 메모리 병합
@@ -108,6 +163,17 @@ void memMergeData(Chunk *current, Chunk *temp) {
 	delete temp;
 	temp = current->link;
 }
+//
+
+void bwfitSort_test() {
+	Chunk *temp_1 = available, *temp_2 = NULL;
+
+	for (; temp_1->link != NULL; temp_1 = temp_1->link) {
+		for (temp_2 = temp_1->link; temp_2 != NULL; temp_2 = temp_2->link) {
+			if (temp_1->mem_left_size > temp_2->mem_left_size) bwfitSwap(temp_1, temp_2); // < 와 > 를 한번에 할 수 있는 방법은?
+		}
+	}
+}
 
 void bwfitSwap(Chunk *temp_1, Chunk *temp_2) { // 데이터 swap
 	int mem_left_size, mem_start;
@@ -119,13 +185,6 @@ void bwfitSwap(Chunk *temp_1, Chunk *temp_2) { // 데이터 swap
 	mem_left_size = temp_1->mem_left_size;
 	temp_1->mem_left_size = temp_2->mem_left_size;
 	temp_2->mem_left_size = mem_left_size;
-}
-
-void bwfitMergeData(Chunk *left, Chunk *temp) {
-	left->mem_left_size += temp->mem_left_size;
-	temp = temp->link;
-	delete left->link;
-	left->link = temp;
 }
 
 void bfitSort() {
@@ -141,23 +200,6 @@ void bfitSort() {
 	}
 }
 
-void bfitMerge() {
-	Chunk *temp = available->link;
-	Chunk *left = available;
-	while (temp != NULL) {
-		while (left->mem_left_size + left->mem_start == temp->mem_start) {
-			//bwfitMergeData(left, temp);
-			left->mem_left_size += temp->mem_left_size;
-			temp = temp->link;
-			delete left->link;
-			left->link = temp;
-		}
-		left = left->link;
-		temp = temp->link;
-	}
-
-}
-
 void wfitSort() {
 	Chunk *temp_1 = available;
 	Chunk *temp_2 = NULL;
@@ -169,23 +211,6 @@ void wfitSort() {
 			}
 		}
 	}
-}
-
-void wfitMerge() {
-	Chunk *temp = available->link;
-	Chunk *left = available;
-	while (temp != NULL) {
-		while (left->mem_left_size + left->mem_start == temp->mem_start) {
-			//bwfitMergeData(left, temp);
-			left->mem_left_size += temp->mem_left_size;
-			temp = temp->link;
-			delete left->link;
-			left->link = temp;
-		}
-		left = left->link;
-		temp = temp->link;
-	}
-
 }
 
 void bwfitMerge() {
@@ -203,38 +228,6 @@ void bwfitMerge() {
 		temp = temp->link;
 	}
 
-}
-
-// F_FIT B_FIT W_FIT
-
-void myfree(int start_addr, int return_size) {
-	Chunk *temp = available;
-
-	while (temp->link != NULL) temp = temp->link;
-	temp->link = new Chunk;
-	temp = temp->link;
-	temp->link = NULL;
-	temp->mem_start = start_addr;
-	temp->mem_left_size = return_size;
-
-	switch (F_FIT) {
-	case F_FIT:
-		memMerge();
-		break;
-	case B_FIT:
-		bfitSort(); // 메모리 정렬이 없으면 
-		memMerge();
-		bfitSort();
-		break;
-	case W_FIT:
-		wfitSort();
-		//memMerge_bwfit();
-		memMerge();
-		wfitSort();
-		break;
-	}
-
-	printf("mem free\n");
 }
 
 void printMemStat() {

@@ -25,25 +25,27 @@ typedef struct chunk {
 #endif
 
 extern Chunk *available;
+extern unsigned char tag;
+
+void setTag();
 
 void initMem();
 void releaseMem();// 모든 메모리 할당 해제
 
 int myalloc(int req_size);
+void myfree(int start_addr, int return_size);
+void setNode(Chunk *temp, int start_addr, int return_size);
 
 void memMerge();
 void memMergeData(Chunk *current, Chunk *temp); // 해당 함수는 오류로 인한 사용 불가
 
+void bwfitSort_test();
 void bwfitSwap(Chunk *temp_1, Chunk *temp_2);
-void bwfitMerge();
-//void bwfitMergeData(Chunk *left, Chunk *temp);
 
 void bfitSort();
-void bfitMerge();
 
 void wfitSort();
-void wfitMerge();
 
-void myfree(int start_addr, int return_size);
+void bwfitMerge();
 
 void printMemStat();
